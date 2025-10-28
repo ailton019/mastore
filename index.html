@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>MAStore</title>
+
+    <!-- Content Security Policy simples (ajuste conforme necessário no servidor) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:;">
+
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="shortcut icon" href="src/img/maarket-favicon.png" type="img">
+
+    <!-- QRCode lib (gera QR dinâmico se desejar) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js" defer></script>
+    <script src="src/js/script.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">₿</span>
+                <h1>MAStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#products">Produtos</a></li>
+                    <li><a href="#payment">Pagamento</a></li>
+                    <li id="cartIcon" class="cart-icon" aria-label="Abrir carrinho">🛒 <span id="cartCount" class="cart-count">0</span></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h2>Compre com Bitcoin ou PIX</h2>
+            <p>Loja simples e rápida — finalize pelo WhatsApp e pague por PIX ou Bitcoin.</p>
+            <a href="#products" class="btn">Ver Produtos</a>
+        </div>
+    </section>
+
+    <!-- Produtos -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Nossos Produtos</h2>
+            <div id="productsGrid" class="products-grid" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- Payment / Info -->
+    <section class="bitcoin-info" id="payment">
+        <div class="container bitcoin-content">
+            <div class="bitcoin-text">
+                <h2>Formas de Pagamento</h2>
+                <p>Aceitamos PIX e Bitcoin. No fechamento do pedido você receberá instruções e poderá escanear o QR Code correspondente.</p>
+                <p>Taxa de câmbio usada no site: <span id="btcRate">—</span></p>
+            </div>
+            <div class="bitcoin-qr" id="staticQrs">
+                <!-- Imagens de QR (adicione arquivos em /assets/ ou altere o caminho) -->
+                <div class="qr-box">
+                    <img id="pixQrImg" src="./src/img/pix.jpg" alt="QR Code PIX (substitua por seu QR)" onerror="this.style.display='none'">
+                    <p class="qr-label">PIX - Nubank</p>
+                </div>
+                <div class="qr-box">
+                    <img id="btcQrImg" src="" alt="QR Code BTC (opcional)" onerror="this.style.display='none'">
+                    <p class="qr-label">Bitcoin (opcional)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Carrinho -->
+    <div id="cartModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="cartTitle">
+        <div class="modal-content" role="document">
+            <header class="modal-header">
+                <h2 id="cartTitle">Seu Carrinho</h2>
+                <button id="closeModal" class="close-modal" aria-label="Fechar">×</button>
+            </header>
+
+            <div class="modal-body">
+                <div id="cartItems" class="cart-items"></div>
+
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalBtc">0 BTC</span>
+                    <span id="cartTotalFiat">(R$ 0,00)</span>
+                </div>
+
+                <!-- Formulário de entrega -->
+                <form id="deliveryForm" class="delivery-form" autocomplete="off" novalidate>
+                    <h3>Informações de Entrega</h3>
+                    <label>
+                        Nome Completo *
+                        <input type="text" id="customerName" name="customerName" required>
+                    </label>
+                    <label>
+                        E-mail *
+                        <input type="email" id="customerEmail" name="customerEmail" required>
+                    </label>
+                    <label>
+                        Telefone *
+                        <input type="tel" id="customerPhone" name="customerPhone" required placeholder="Ex: 11999998888">
+                    </label>
+                    <label>
+                        Endereço *
+                        <textarea id="deliveryAddress" name="deliveryAddress" required placeholder="Rua, número, complemento..."></textarea>
+                    </label>
+
+                    <div class="form-row">
+                        <label>
+                            Cidade *
+                            <input type="text" id="deliveryCity" name="deliveryCity" required>
+                        </label>
+                        <label>
+                            Estado *
+                            <input type="text" id="deliveryState" name="deliveryState" required>
+                        </label>
+                    </div>
+
+                    <label>
+                        CEP *
+                        <input type="text" id="deliveryZip" name="deliveryZip" required>
+                    </label>
+                </form>
+
+                <!-- Confirmação / QR -->
+                <div id="confirmationSection" class="payment-section" hidden>
+                    <h3>Pedido Preparado</h3>
+                    <div class="payment-info">
+                        <div id="orderSummary" class="order-summary" aria-live="polite"></div>
+
+                        <p><strong>Total:</strong> <span id="orderTotalBtc">0 BTC</span> — <span id="orderTotalFiat">(R$ 0,00)</span></p>
+
+                        <div class="qr-section" id="qrSection">
+                            <!-- O script mostrará QR dinâmico ou imagens estáticas -->
+                            <div class="qr-column">
+                                <h4>PIX</h4>
+                                <canvas id="pixQrCanvas" style="display:none"></canvas>
+                                <img id="pixQrPreview" src="./src/img/pix.jpg" alt="PIX QR" onerror="this.style.display='none'">
+                                <p class="small">Escaneie o QR com o app do seu banco</p>
+                            </div>
+                            <div class="qr-column">
+                                <h4>Bitcoin</h4>
+                                <canvas id="btcQrCanvas" style="display:none"></canvas>
+                                <img id="btcQrPreview" src="./src/img/pix.jpg" alt="BTC QR" onerror="this.style.display='none'">
+                                <p class="small">No momento, apenas PIX.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <button id="backToCartBtn" class="btn btn-secondary" hidden>← Voltar</button>
+                <button id="checkoutBtn" class="btn">Finalizar Compra</button>
+                <button id="confirmOrderBtn" class="btn" hidden>Confirmar Pedido</button>
+            </footer>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <h3>MAStore</h3>
+                <p>Loja simples para pagamentos via PIX e Bitcoin.(Caso preferir pagar em BTC solicitar a chave, após finalizar o pedido.)</p>
+            </div>
+            <div>
+                <h3>Contato</h3>
+                <p>E-mail: maranha.ma@oniomail.org</p>
+            </div>
+        </div>
+        <div class="copyright">&copy; MAStore</div>
+    </footer>
+</body>
+</html>
