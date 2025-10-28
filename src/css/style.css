@@ -6,6 +6,153 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* -------------------- MEDIA QUERIES -------------------- */
+
+/* Telas grandes (até 1200px) */
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 95%;
+  }
+
+  .bitcoin-content {
+    gap: 20px;
+  }
+}
+
+/* Tablets (até 992px) */
+@media screen and (max-width: 992px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+  }
+
+  .bitcoin-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bitcoin-qr {
+    flex: none;
+  }
+
+  .qr-section {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+/* Celulares (até 768px) */
+@media screen and (max-width: 768px) {
+  header {
+    text-align: center;
+  }
+
+  .hero {
+    padding: 2.5rem 1rem;
+  }
+
+  .hero h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .product-image {
+    height: 180px;
+  }
+
+  .product-info {
+    padding: 15px;
+  }
+
+  .product-title {
+    font-size: 1rem;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .cart-total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .modal-content {
+    max-width: 95%;
+  }
+}
+
+/* Celulares pequenos (até 480px) */
+@media screen and (max-width: 480px) {
+  .hero h2 {
+    font-size: 1.4rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .product-image {
+    height: 160px;
+  }
+
+  .bitcoin-content {
+    text-align: center;
+  }
+
+  .cart-item {
+    gap: 10px;
+  }
+
+  .quantity-controls {
+    gap: 4px;
+  }
+
+  .delivery-form input,
+  .delivery-form textarea {
+    font-size: 0.9rem;
+  }
+}
+
 :root {
   --primary: #f7931a;
   --primary-dark: #e6850e;
